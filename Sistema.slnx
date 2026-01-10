@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AccesoDatos/AccesoDatos.csproj" />
+  <Project Path="Modelos/Modelos.csproj" />
+  <Project Path="Sistema/Sistema.csproj" />
+  <Project Path="Utilidades/Utilidades.csproj" />
+</Solution>
