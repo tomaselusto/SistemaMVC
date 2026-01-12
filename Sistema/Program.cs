@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AccesoDatos.Data;
+using AccesoDatos.Repositorio.IRepositorio;
+using AccesoDatos.Repositorio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+//addscope permite que la instancia del servicio se cree una vez y la use tantas veces como se la requiere. Estamos agregando el servicio de UnidadDeTrabajo
+builder.Services.AddScoped<IUnidadTrabajo, UnidadTrabajo>();
 
 var app = builder.Build();
 
