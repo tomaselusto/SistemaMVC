@@ -1,0 +1,9 @@
+﻿@model int
+
+@* en el asp-route-id se pone "id" porque es el nombre que tiene en el método upsert el int que recibe *@
+<div class="d-grid gap-2 d-md-block">
+    <button type="submit" class="btn btn-primary" onfocus="false" asp-route-id="@Model"> 
+        <i class="bi bi-pencil-square"></i>Actualizar
+    </button>
+    <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-return-left"></i>Volver</a>
+</div>

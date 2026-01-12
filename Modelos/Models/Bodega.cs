@@ -15,6 +15,6 @@ namespace Modelos.Models
         [Required(ErrorMessage = "la descripción es requerido")]
         [MaxLength(100, ErrorMessage = "Nombre máximo 100 caracteres")]
         public string? Descripcion { get; set; }
-        public bool Estado { get; set; } = true;
+        public bool Estado { get; set; }
     }
 }
