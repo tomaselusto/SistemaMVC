@@ -8,6 +8,7 @@ namespace AccesoDatos.Repositorio.IRepositorio
     {
         //envolvemos los respositorios que tenemos
         IBodegaRepositorio Bodega { get;  }
+        ICategoriaRepositorio Categoria { get; }
         Task Guardar(); //guardara con el savechanges()
 
     }

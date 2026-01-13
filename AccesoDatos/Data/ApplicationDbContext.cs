@@ -8,7 +8,7 @@ namespace AccesoDatos.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
     {
         public DbSet<Bodega> Bodegas { get; set; }
-
+        public DbSet<Categoria> Categorias { get; set; }
         //fluentAPI
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
