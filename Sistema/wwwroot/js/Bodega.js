@@ -62,3 +62,34 @@ function loadDataTable() {
 
     });
 }
+
+
+function Delete(url) {
+    /*sweet alert y paramétros principales*/
+    swal({
+        title: "¿Está seguro de eliminar la bodega?",
+        text: "Este registro no se podrá ser recuperado",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+
+    }).then((borrar) => {
+        if (borrar) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                /*este success es el que mandamos en el json en el controlador*/
+                success: function (data) {
+                    if (data.success) {
+                        /*libreria toastr para enviar notificaciones*/
+                        toastr.success(data.message);
+                        datatable.ajax.reload();
+                    }
+                    else {
+                        toastr.error(data.message);
+                    }
+                }     
+            })
+        }
+    });
+}

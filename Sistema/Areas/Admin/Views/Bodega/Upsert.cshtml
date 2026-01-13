@@ -9,13 +9,13 @@
  <form method="post">
      <div style="padding-left: 15%; padding-right:15%; padding-bottom:inherit.4rem;">
          <div class="row border 0">
-             <div asp-asp-validation-summary="ModelOnly" class="text-danger"></div>
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
          </div>
          @if(Model.Id!=0)
             {
                 //actualizar
                 titulo = "Actualizar Bodega";
-                <input type="hidden" asp-for="Id"/>
+                <input type="hidden" asp-for="Id" id="id"/>
             }
             <div class="col border-bottom p-0">
                 <h2 class="text-primary">@titulo</h2>
@@ -24,7 +24,7 @@
             <div class="row mb-2 mt-2">
                 <div class="form-group col-md-6">
                     <label>Nombre</label>
-                    <input type="text" asp-for="Nombre" class="form-control" placeholder="Nombre de la bodega" />
+                <input type="text" asp-for="Nombre" class="form-control" placeholder="Nombre de la bodega" id="nombre" />
                     <span asp-validation-for="Nombre" class="text-danger"></span>
 
                 </div>    
@@ -70,6 +70,48 @@
  </form>
 
 @* para ver los data notation de la clase con lso errores definidiso *@
-@section Scripts{
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+
+            // URL robusta para Areas (evita errores de ruta)
+            const urlValidarNombre = '@Url.Action("ValidarNombre", "Bodega", new { area = "Admin" })';
+
+            // Disparar validación cuando sale del campo (blur)
+            $("#nombre").on("blur", function () {
+                validarNombre(urlValidarNombre);
+            });
+
+            function validarNombre(url) {
+                const nombreVal = $("#nombre").val();
+
+                // creando, #id no existe => 0
+                const idVal = $("#id").length ? $("#id").val() : 0;
+
+                $.getJSON(url, { nombre: nombreVal, id: idVal })
+                    .done(function (response) {
+                        // El controller devuelve: { data: true/false }
+                        if (response && response.data === true) {
+                            // SweetAlert (versión clásica)
+                            if (typeof swal === "function") {
+                                swal("Error", "El nombre ya existe", "error");
+                            } else if (window.Swal && typeof Swal.fire === "function") {
+                                // SweetAlert2 
+                                Swal.fire("Error", "El nombre ya existe", "error");
+                            } else {
+                                alert("El nombre ya existe");
+                            }
+
+                            $("#nombre").val("").focus();
+                        }
+                    })
+                    .fail(function (xhr) {
+                        console.error("Error llamando a ValidarNombre:", xhr.status, xhr.responseText);
+                    });
+            }
+        });
+    </script>
 }
