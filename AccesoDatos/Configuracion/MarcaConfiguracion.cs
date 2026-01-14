@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modelos.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace AccesoDatos.Configuracion
 {
-    public class MarcaConfiguracion
+    public class MarcaConfiguracion : IEntityTypeConfiguration<Marca>
     {
         //configuración de FluentAPI
         public void Configure(EntityTypeBuilder<Marca> builder)
@@ -16,5 +17,6 @@ namespace AccesoDatos.Configuracion
             builder.Property(x => x.Descripcion).IsRequired();
             builder.Property(x => x.Estado).IsRequired();
         }
+
     }
 }
