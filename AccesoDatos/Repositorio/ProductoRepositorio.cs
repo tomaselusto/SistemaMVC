@@ -60,6 +60,15 @@ namespace AccesoDatos.Repositorio
                     Value = c.Id.ToString()
                 });
             }
+            if (obj == "Producto")
+            {
+                return ctx.Productos.Where(c => c.Estado == true).Select(c => new SelectListItem
+                {
+                    Text = c.Descripcion,
+                    Value = c.Id.ToString()
+                });
+            }
+
             return null;
         }
     }

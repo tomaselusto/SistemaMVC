@@ -11,9 +11,13 @@ namespace Sistema.Areas.Admin.Controllers
     {
         //llamamos a nuestra unidad de trabajo
         private readonly IUnidadTrabajo _unidadTrabajo;
-        public ProductoController(IUnidadTrabajo ut)
+        //manejar acceso a recrusos estaticos tipo rutas de imagenes
+        private readonly IWebHostEnvironment _webHostEnviorment;
+
+        public ProductoController(IUnidadTrabajo ut, IWebHostEnvironment whe )
         {
              _unidadTrabajo= ut;
+            _webHostEnviorment= whe;
         }
 
         public IActionResult Index()
@@ -27,11 +31,13 @@ namespace Sistema.Areas.Admin.Controllers
             {
                 Producto = new Producto(),
                 CategoriaLista = _unidadTrabajo.Producto.ObtenerTodosDropDownList("Categoria"),
-                MarcaLista=_unidadTrabajo.Producto.ObtenerTodosDropDownList("Marca")
+                MarcaLista=_unidadTrabajo.Producto.ObtenerTodosDropDownList("Marca"),
+                PadreLista = _unidadTrabajo.Producto.ObtenerTodosDropDownList("Producto")
             };
             if(id==null)
             {
                 //crear nuevo producto
+                prodVM.Producto.Estado = true;
                 return View(prodVM);
             }
             else
@@ -44,7 +50,70 @@ namespace Sistema.Areas.Admin.Controllers
 
                
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> Upsert (ProductoVM prodVM) //recibirá el view model
+        {
+            if(ModelState.IsValid)
+            {
+                var files= HttpContext.Request.Form.Files; //valida todos los archivos que le pasamos por post
+                string webRootPath = _webHostEnviorment.WebRootPath; //ruta donde se grabará nuestra imagen
+
+                if(prodVM.Producto.Id==0)
+                {
+                    //nuevo producto
+                    string upload = webRootPath + DS.ImagenRuta;
+                    string fileName= Guid.NewGuid().ToString();
+                    string extension = Path.GetExtension(files[0].FileName);
+                    using(var fileStream = new FileStream(Path.Combine(upload,fileName +extension),FileMode.Create)) 
+                    {
+                        files[0].CopyTo(fileStream); //copio la imagen física en un espacio en memoria
+                    }
+                    prodVM.Producto.ImagenUrl = fileName + extension;
+                    await _unidadTrabajo.Producto.Agregar(prodVM.Producto);
+
+
+                }
+                else
+                {
+                    //Actualizar-> si envío una nueva imagen debo reemplazar la anterior
+                    var objProd= await _unidadTrabajo.Producto.ObtenerPrimero(p=>p.Id ==prodVM.Producto.Id, isTracking:false);
+                    if(files.Count>0) //si se carga uan nueva imagen
+                    {
+                        string upload = webRootPath + DS.ImagenRuta;
+                        string fileName = Guid.NewGuid().ToString(); //id unico para eso el guid
+                        string extension = Path.GetExtension(files[0].FileName);
+                        //borrar la img anterior
+                        var anterior= Path.Combine(upload,objProd.ImagenUrl);
+                        if(System.IO.File.Exists(anterior))
+                        {
+                            System.IO.File.Delete(anterior);
+                        }
+                        //Creamos la nueva img.
+                        using (var fileStream = new FileStream(Path.Combine(upload, fileName+ extension), FileMode.Create))
+                        {
+                            files[0].CopyTo(fileStream); //copio la imagen física en un espacio en memoria
+                        }
+                        prodVM.Producto.ImagenUrl=fileName + extension;
+                        
+                    }
+                    //sino se carga una nueva imagen
+                    else
+                    {
+                        prodVM.Producto.ImagenUrl = objProd.ImagenUrl;
+                    }
+                    _unidadTrabajo.Producto.Actualizar(prodVM.Producto);
+                }
+                TempData[DS.Exitosa] = "El producto se guardó con éxito";
+                await _unidadTrabajo.Guardar();
+                return View("Index");
+            }
+            //si el modelo no es válido, cargo de nuevo las listas de categorias y marcas
+            prodVM.CategoriaLista = _unidadTrabajo.Producto.ObtenerTodosDropDownList("Categoria");
+            prodVM.MarcaLista = _unidadTrabajo.Producto.ObtenerTodosDropDownList("Marca");
+            prodVM.PadreLista = _unidadTrabajo.Producto.ObtenerTodosDropDownList("Producto");
+            return View(prodVM);
+        }
 
         #region API
         [HttpGet]
@@ -62,7 +131,17 @@ namespace Sistema.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "Error al borrar la bodega, no se encontró" });
             }
-                
+
+            //eliminar la imagen antes de eliminar el producto
+            string upload = _webHostEnviorment.WebRootPath + DS.ImagenRuta;
+            var imgABorrar = Path.Combine(upload, prodBD.ImagenUrl);
+            if(System.IO.File.Exists(imgABorrar))
+            {
+                System.IO.File.Delete(imgABorrar);
+            }
+
+
+            //borramos al producto                
             _unidadTrabajo.Producto.Remover(prodBD);
             await _unidadTrabajo.Guardar();
             return Json(new { success = true, message = "Se borró el producto" });

@@ -75,7 +75,7 @@ namespace AccesoDatos.Repositorio
                 foreach (var incluirProp in incluirPropiedades.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))// lo trasnformo en char, hago un split para que lo separe por comas, además remueve los espacios vacios.
                 {
                     //include nos va a servir (propio de EF) nos va a incluir las propiedades de los objetos relacionados (cuando mandamos un producto nos va a traer categorioa y marca por ej)
-                    query.Include(incluirProp);
+                   query= query.Include(incluirProp);
                 }
             }
             if(orderBy!=null)

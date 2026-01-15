@@ -60,7 +60,7 @@ function loadDataTable() {
                                 <i class="bi bi-pencil-square"></i>
                             </a>  
 
-                            <a onclick=Delete("/Producto/Marca/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer">
+                            <a onclick=Delete("/Admin/Producto/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer">
                                 <i class="bi bi-trash3-fill"></i>
                             </a>
 

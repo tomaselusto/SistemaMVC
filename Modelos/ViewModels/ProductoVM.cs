@@ -16,6 +16,9 @@ namespace Modelos.ViewModels
 
         public IEnumerable<SelectListItem> MarcaLista { get; set; }
 
+        //para recursividad
+        public IEnumerable<SelectListItem> PadreLista { get; set; }
+
 
     }
 }

@@ -15,23 +15,28 @@
 
 <br/>
 <div class="p-4 border rounded bg-light">
-    <table id="tblDatos" class="table table-responsive table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Número de Serie</th>
-                <th>Descripción</th>
-                <th>Categoria</th>
-                <th>Marca</th>
-                <th>Precio</th>                
-                <th>Estado</th>
-                <th></th>
-            </tr>
-        </thead>
-    </table>
+    <div class="table-responsive">
+        <table id="tblDatos" class="table table-hover w-100">
+            <thead class="table-dark">
+                <tr>
+                    <th>Número de Serie</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Marca</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 
 
 @* llamada a JS *@
  @section Scripts{
      <script src="~/js/Producto.js"></script>
+
+         
+    });
 }
