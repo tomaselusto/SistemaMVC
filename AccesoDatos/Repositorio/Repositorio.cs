@@ -7,6 +7,7 @@ using AccesoDatos.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Modelos.Especificaciones;
 
 namespace AccesoDatos.Repositorio
 {
@@ -88,6 +89,35 @@ namespace AccesoDatos.Repositorio
             }
 
             return await query.ToListAsync(); //me devuelve la lista de lo que le envío
+        }
+
+        public PagedList<T> ObtenerTodosPaginados(Parametros parametros, Expression<Func<T, bool>> filtro = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string incluirPropiedades = null, bool isTracking = true)
+        {
+            IQueryable<T> query = dbSet;
+            if (filtro != null)
+            {
+                //filtramos nuestro query/consulta
+                query = query.Where(filtro); //select * from where - FILTRO - 
+            }
+            if (incluirPropiedades != null)
+            {
+                //verifico si la cadena de caracteres manda valor (para los include)
+                foreach (var incluirProp in incluirPropiedades.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))// lo trasnformo en char, hago un split para que lo separe por comas, además remueve los espacios vacios.
+                {
+                    //include nos va a servir (propio de EF) nos va a incluir las propiedades de los objetos relacionados (cuando mandamos un producto nos va a traer categorioa y marca por ej)
+                    query = query.Include(incluirProp);
+                }
+            }
+            if (orderBy != null)
+                query = orderBy(query); //para dar un criterio de orden
+
+            if (!isTracking)
+            {
+                //si es false 
+                query = query.AsNoTracking();
+            }
+
+            return PagedList<T>.ToPagedList(query, parametros.PageNumber, parametros.PageSize);
         }
 
         public void Remover(T entidad)

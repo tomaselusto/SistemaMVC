@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Modelos.Models.Producto>
+﻿@model Modelos.Especificaciones.PagedList<Producto>
 @using Utilidades
 @{
     ViewData["Title"] = "Home Page";
@@ -14,12 +14,17 @@
 
 <section>
     <div class="container my-2">
-        <div class="col-lg-6 col-md-6 col-sm-6 d-flex">
-            <div class="input-group-mb3">
-                <input type="text" class="form-control" placeholder="buscar productos" aria-label="Buscar" aria-describedby="button-addon2" />
-                <button class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
-            </div>            
-        </div>
+        <form asp-action="Index" method="get">
+            <div class="col-lg-6 col-md-6 col-sm-6 d-flex">
+                <div class="input-group-mb3">
+                    <input type="text" class="form-control" placeholder="buscar productos" aria-label="Buscar" aria-describedby="button-addon2"name="busqueda" value="@ViewData["BusquedaActual"]"/>
+
+                    <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+        
+        </form>
+        
 
         <div class="row">
             @foreach(var prod  in Model)
@@ -29,14 +34,35 @@
                         <img src="@DS.ImagenRuta@prod.ImagenUrl" class="card-img-top" style="aspect-ratio:1/1"/>
                         <div class="card-body d-flex flex-column"></div>
                         <h5 class="card-title"> @prod.Descripcion</h5>
-                        <p class="card-text">$ @string.Format("{0:#, ##0.000}", prod.Precio)</p>
+                        <p class="card-text">$ @string.Format("{0:#, ##0.00}", prod.Precio)</p>
                         <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto bg-white">
                             <a href="#" class="btn btn-outline-primary"><i class="bi bi-tags-fill"></i></a>
                         </div>
                     </div>
                 </div>
             }
+            
         </div>
-
+       @*  hay que ver porque qeuda mal en la vista los botones sobre el layoutfinal *@
+        <div>
+        @* BOTON VOLVER A PAG 1 *@
+        <a asp-action="Index" asp-route-pageNumber="@(1)" class="btn btn-outline-primary"
+        asp-route-busquedaActual="@ViewData["BusquedaActual"]" >
+            <i class="bi bi-skip-start-fill"></i>
+        </a>
+        @* BOTON VOLVER A PAG ANTERIOR *@
+            <a asp-action="Index" asp-route-pageNumber="@((int?)ViewData["PageNumber"] - 1)" class="btn btn-outline-primary @ViewData["Previo"]" asp-route-busquedaActual="@ViewData["BusquedaActual"]">
+            Anterior
+        </a>
+        <span>Pagina @ViewData["PageNumbre"] de @ViewData["TotalPaginas"]</span>
+        @* BOTON VOLVER A PAG SIGUIENTE *@
+            <a asp-action="Index" asp-route-pageNumber="@((int?)ViewData["PageNumber"] + 1)" class="btn btn-outline-primary @ViewData["Siguiente"]" asp-route-busquedaActual="@ViewData["BusquedaActual"]">
+            Siguiente
+        </a>
+        @* BOTON VOLVER A PAG ULTIMA *@
+            <a asp-action="Index" asp-route-pageNumber="@((int?)ViewData["TotalPaginas"])" class="btn btn-outline-primary" asp-route-busquedaActual="@ViewData["BusquedaActual"]">
+            <i class="bi bi-skip-end-fill"></i>
+        </a>
+        </div>
     </div>
 </section>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Modelos.Especificaciones;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
@@ -27,5 +28,10 @@ namespace AccesoDatos.Repositorio.IRepositorio
         void Remover (T entidad); // no pueden ser asíncronos
         void RemoverRango (IEnumerable<T> entidad);// no pueden ser asíncronos
 
+
+        PagedList<T> ObtenerTodosPaginados(Parametros parametros, Expression<Func<T, bool>> filtro = null, //hará los filtros
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,  //esto es para ordenarlos
+            string incluirPropiedades = null,
+            bool isTracking = true);
     }
 }
