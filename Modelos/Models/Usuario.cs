@@ -29,7 +29,7 @@ namespace Modelos.Models
         public string Pais { get; set; }
 
         [NotMapped]  // esta propiedad no se agrega como columna en la bd
-        public string Rol { get; set; } //relacionada con los permisos.
+        public string Rol { get; set; } //relacionada con los permisos, es referencial.
 
 
     }

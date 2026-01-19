@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using AccesoDatos.Data;
 using AccesoDatos.Repositorio.IRepositorio;
 using AccesoDatos.Repositorio;
+using Utilidades;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +14,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false). AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+//AddDefaultTokenProviders() permite trabajar con email senders
+
 //addscope permite que la instancia del servicio se cree una vez y la use tantas veces como se la requiere. Estamos agregando el servicio de UnidadDeTrabajo
 builder.Services.AddScoped<IUnidadTrabajo, UnidadTrabajo>();
+
+builder.Services.AddRazorPages();
+
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
