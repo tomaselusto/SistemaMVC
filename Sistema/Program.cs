@@ -14,8 +14,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false). AddDefaultTokenProviders()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false). AddDefaultTokenProviders().AddErrorDescriber<ErrorDescriber>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//cambiar reglas de password
+builder.Services.Configure<IdentityOptions>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase=false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredUniqueChars = 1;
+
+    }
+
+) 
+
+
 builder.Services.AddControllersWithViews();
 
 //AddDefaultTokenProviders() permite trabajar con email senders
