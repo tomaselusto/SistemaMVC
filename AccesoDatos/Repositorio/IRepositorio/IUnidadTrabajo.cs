@@ -10,7 +10,7 @@ namespace AccesoDatos.Repositorio.IRepositorio
         IBodegaRepositorio Bodega { get;  }
         ICategoriaRepositorio Categoria { get; }
         IMarcaRepositorio Marca { get; }
-
+        IUsuarioRepositorio Usuario { get; }
         IProductoRepositorio Producto { get; }
         Task Guardar(); //guardara con el savechanges()
 
