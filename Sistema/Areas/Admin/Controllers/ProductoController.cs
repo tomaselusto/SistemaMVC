@@ -1,4 +1,5 @@
 ﻿using AccesoDatos.Repositorio.IRepositorio;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Modelos.Models;
 using Modelos.ViewModels;
@@ -7,6 +8,7 @@ using Utilidades;
 namespace Sistema.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = DS.RolAdmin +"," + DS.RolInventario)]
     public class ProductoController : Controller
     {
         //llamamos a nuestra unidad de trabajo

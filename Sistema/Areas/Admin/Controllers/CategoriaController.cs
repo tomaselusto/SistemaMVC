@@ -1,4 +1,5 @@
 ﻿using AccesoDatos.Repositorio.IRepositorio;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Modelos.Models;
 using Utilidades;
@@ -6,6 +7,7 @@ using Utilidades;
 namespace Sistema.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = DS.RolAdmin)]
     public class CategoriaController : Controller
     {
         private readonly IUnidadTrabajo _unidadTrabajo;

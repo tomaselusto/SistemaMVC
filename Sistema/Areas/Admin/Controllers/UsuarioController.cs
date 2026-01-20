@@ -1,12 +1,15 @@
 ﻿using AccesoDatos.Data;
 using AccesoDatos.Repositorio.IRepositorio;
 using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Utilidades;
 
 namespace Sistema.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = DS.RolAdmin)] //autorización
     public class UsuarioController : Controller
     {
         private readonly IUnidadTrabajo _unidadTrabajo;

@@ -17,18 +17,27 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false). AddDefaultTokenProviders().AddErrorDescriber<ErrorDescriber>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+//redirección de usuario no autorizado (configuración de cookies)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = $"/Identity/Account/Login";
+    options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+
 //cambiar reglas de password
-builder.Services.Configure<IdentityOptions>(options => {
+builder.Services.Configure<IdentityOptions>(options =>
+{
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase=false;
+    options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredUniqueChars = 1;
 
-    }
+}
 
-) 
+);
 
 
 builder.Services.AddControllersWithViews();
@@ -59,6 +68,8 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

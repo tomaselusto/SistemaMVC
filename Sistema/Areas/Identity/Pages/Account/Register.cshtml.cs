@@ -216,6 +216,14 @@ namespace Sistema.Areas.Identity.Pages.Account
                         }
                     }
                 }
+                Input = new InputModel
+                {
+                    ListaRol = _roleManagment.Roles.Where(r => r.Name != DS.RolCliente).Select(n => n.Name).Select(l => new SelectListItem
+                    {
+                        Text = l,
+                        Value = l,
+                    })
+                };
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
